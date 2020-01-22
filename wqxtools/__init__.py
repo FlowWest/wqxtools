@@ -29,7 +29,7 @@ def prepare_and_send_get_request(api_endpoint: str, params: dict, pk: str, usern
     p.prepare_headers(headers=headers)
     r = s.send(p)
     status_code = r.status_code
-    content = r.content.decode("utf-8")
+    content = json.loads(r.content.decode("utf-8"))
     r.close()
     s.close()
     return {"status_code": status_code, "content": content}
