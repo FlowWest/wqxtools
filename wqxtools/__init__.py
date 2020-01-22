@@ -21,7 +21,8 @@ def monitoring_locations(org_id: str, pk: str, username: str):
     params = {"OrganizationIdentifiersCsv": org_id}
     stamp = datetime.strftime(datetime.utcnow(), "%m/%d/%Y %I:%M:%S %p")
 
-    # prepare the request
+    # prepare the request, we need to use requests in this way since
+    # the signature needed in the header needs a fully constructed url
     s = requests.Session()
     p = requests.Request("GET", api_endpoint, params=params).prepare()
 
@@ -51,11 +52,25 @@ def projects(org_id: str, pk: str, username: str):
     status_code = r.status_code
     content = r.content.decode("utf-8")
     r.close()
+    s.close()
     j = json.loads(content)
     return {'status_code': status_code, 'content': j}
 
-def upload(filename: str, pk: str, username: str):
-    pass
+def upload(filename: str, filepath: str, pk: str, username: str):
+    api_endpoint = "https://cdx.epa.gov/WQXWeb/api/Upload"
+    uri = "{}/{}".format(api_endpoint, filename) # hack
+    stamp = datetime.strftime(datetime.utcnow(), "%m/%d/%Y %I:%M:%S %p")
+    headers = make_header(uri, pk, username, stamp, "POST")
+
+    with open(filepath, "rb") as f:
+        file_data = f.read()
+
+    files = {filename: file_data}
+    resp = requests.post(url = uri, headers=headers, files=files)
+
+
+
+    stamp = datetime.strftime(datetime.utcnow(), "%m/%d/%Y %I:%M:%S %p")
 
 def upload_attachment(filename: str, pk: str, username: str):
     pass
