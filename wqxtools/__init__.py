@@ -59,13 +59,12 @@ def upload(filename: str, filepath: str, pk: str, username: str):
     pk_decoded = base64.b64decode(pk)
     signature_bytes = base64.b64encode(hmac.new(key=pk_decoded, msg=signature, digestmod='sha256').digest())
     signature_string = signature_bytes.decode('utf-8')
-    headers = {'X-UserID': username, 'X-Stamp': stamp, 'X-Signature': signature_string}
+    headers = {'X-UserID': username, 'X-Stamp': stamp, 'X-Signature': signature_string, 'Content-Type': 'text/plain'}
 
     with open(filepath, "rb") as f:
         file_data = f.read()
 
-    files = {filename: file_data}
-    resp = requests.post(url=url, headers=headers, files=files)
+    resp = requests.post(url=url, headers=headers, data=file_data)
     status_code = resp.status_code
     content = json.loads(resp.content.decode("utf-8"))
     return {"status_code": status_code, "content": content}
