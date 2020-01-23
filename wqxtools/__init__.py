@@ -18,7 +18,7 @@ def make_get_header(uri: str, pk: str, username: str, stamp: str, method: str) -
 
 # all get request share the process, a bit weird but we need the fully constructed url to
 # have the correct message for HMAC256  so we need to use the requests API this way
-def prepare_and_send_get_request(api_endpoint: str, params: dict, pk: str, username: str) -> dict:
+def prepare_and_send_get(api_endpoint: str, params: dict, pk: str, username: str) -> dict:
 
     stamp = datetime.strftime(datetime.utcnow(), "%m/%d/%Y %I:%M:%S %p")
     s = requests.Session()
@@ -39,14 +39,14 @@ def monitoring_locations(org_id: str, pk: str, username: str) -> dict:
     monitoring_locations_endpoint = "https://cdx.epa.gov/WQXWeb/api/MonitoringLocations"
     params = {"OrganizationIdentifiersCsv": org_id}
 
-    return prepare_and_send_get_request(monitoring_locations_endpoint, params, pk, username)
+    return prepare_and_send_get(monitoring_locations_endpoint, params, pk, username)
 
 
 def projects(org_id: str, pk: str, username: str) -> dict:
     projects_endpoint = "https://cdx.epa.gov/WQXWeb/api/Projects"
     params = {"OrganizationIdentifiersCsv": org_id}
 
-    return prepare_and_send_get_request(projects_endpoint, params, pk, username)
+    return prepare_and_send_get(projects_endpoint, params, pk, username)
 
 
 def upload(filename: str, filepath: str, pk: str, username: str):
@@ -77,7 +77,6 @@ def start_import(pk: str, username: str, import_config: str, file_id: str, file_
     file_cond = {'both': 0, 'new': 1, 'existing': 2}[new_or_existing]
     first_row_is_header = {True: "true", False: "false"}[headers]
     start_import_endpoint = "https://cdx.epa.gov/WQXWeb/api/StartImport"
-    stamp = datetime.strftime(datetime.utcnow(), "%m/%d/%Y %I:%M:%S %p")
 
     params = {
         "importConfigurationId": import_config,
@@ -90,14 +89,14 @@ def start_import(pk: str, username: str, import_config: str, file_id: str, file_
         "ignoreFirstRowOfFile": first_row_is_header
     }
 
-    return prepare_and_send_get_request(start_import_endpoint, params, pk, username)
+    return prepare_and_send_get(start_import_endpoint, params, pk, username)
 
 
 def get_status(dataset_id: str, pk: str, username: str) -> dict:
     status_endpoint = "https://cdx.epa.gov/WQXWeb/api/GetStatus"
     params = {"datasetId": dataset_id}
 
-    return prepare_and_send_get_request(status_endpoint, params, pk, username)
+    return prepare_and_send_get(status_endpoint, params, pk, username)
 
 
 # TODO: need implementation
@@ -113,7 +112,7 @@ def xml_export(dataset_id: str, upon_completion: int):
 def submit_to_cdx(dataset_id: str, pk: str, username: str):
     submit_cdx_edpoint = "https://cdx.epa.gov/WQXWeb/api/SubmitDatasetToCdx"
     params = {'datasetId': dataset_id}
-    return prepare_and_send_get_request(submit_cdx_edpoint, params, pk, username)
+    return prepare_and_send_get(submit_cdx_edpoint, params, pk, username)
 
 
 # TODO: need implementation
@@ -124,5 +123,5 @@ def submit_file_to_cdx(field: str):
 def get_document_list(dataset_id: str, pk: str, username: str):
     doc_list_endpoint = "https://cdx.epa.gov/WQXWeb/api/GetDocumentList"
     params = {"datasetId": dataset_id}
-    return prepare_and_send_get_request(doc_list_endpoint, params, pk, username)
+    return prepare_and_send_get(doc_list_endpoint, params, pk, username)
 
