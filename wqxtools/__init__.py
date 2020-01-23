@@ -35,14 +35,14 @@ def prepare_and_send_get_request(api_endpoint: str, params: dict, pk: str, usern
     return {"status_code": status_code, "content": content}
 
 
-def monitoring_locations(org_id: str, pk: str, username: str):
+def monitoring_locations(org_id: str, pk: str, username: str) -> dict:
     monitoring_locations_endpoint = "https://cdx.epa.gov/WQXWeb/api/MonitoringLocations"
     params = {"OrganizationIdentifiersCsv": org_id}
 
     return prepare_and_send_get_request(monitoring_locations_endpoint, params, pk, username)
 
 
-def projects(org_id: str, pk: str, username: str):
+def projects(org_id: str, pk: str, username: str) -> dict:
     projects_endpoint = "https://cdx.epa.gov/WQXWeb/api/Projects"
     params = {"OrganizationIdentifiersCsv": org_id}
 
@@ -50,8 +50,9 @@ def projects(org_id: str, pk: str, username: str):
 
 
 def upload(filename: str, filepath: str, pk: str, username: str):
-    api_endpoint = "https://cdx.epa.gov/WQXWeb/api/Upload"
-    url = "{}/{}".format(api_endpoint, filename)
+    upload_endpoint = "https://cdx.epa.gov/WQXWeb/api/Upload"
+    url = "{}/{}".format(upload_endpoint, filename)
+
     stamp = datetime.strftime(datetime.utcnow(), "%m/%d/%Y %I:%M:%S %p")
     msg_data = "{}{}{}{}".format(username, stamp, url, "POST")
     signature = bytes(msg_data, "utf-8")
@@ -71,8 +72,7 @@ def upload(filename: str, filepath: str, pk: str, username: str):
 
 
 def start_import(pk: str, username: str, import_config: str, file_id: str, file_type: str,
-                 new_or_existing: str, upon_completion: int = 0,
-                 upon_completion_cond: int = 0, headers: bool = True):
+                 new_or_existing: str, headers: bool = True) -> dict:
 
     file_cond = {'both': 0, 'new': 1, 'existing': 2}[new_or_existing]
     first_row_is_header = {True: "true", False: "false"}[headers]
@@ -84,8 +84,8 @@ def start_import(pk: str, username: str, import_config: str, file_id: str, file_
         "fileId": file_id,
         "fileType": file_type,
         "newOrExistingData": file_cond,
-        "uponCompletion": upon_completion,
-        "uponCompletionCondition": upon_completion_cond,
+        "uponCompletion": '0',
+        "uponCompletionCondition": '0',
         "worksheetsToImport": '1',
         "ignoreFirstRowOfFile": first_row_is_header
     }
@@ -100,26 +100,29 @@ def get_status(dataset_id: str, pk: str, username: str) -> dict:
     return prepare_and_send_get_request(status_endpoint, params, pk, username)
 
 
-
-
+# TODO: need implementation
 def upload_attachment(filename: str, pk: str, username: str):
     pass
 
 
+# TODO: need implementation
 def xml_export(dataset_id: str, upon_completion: int):
     pass
 
 
-def submit_to_cdx(dataset_id: str):
-    pass
+def submit_to_cdx(dataset_id: str, pk: str, username: str):
+    submit_cdx_edpoint = "https://cdx.epa.gov/WQXWeb/api/SubmitDatasetToCdx"
+    params = {'datasetId': dataset_id}
+    return prepare_and_send_get_request(submit_cdx_edpoint, params, pk, username)
 
 
+# TODO: need implementation
 def submit_file_to_cdx(field: str):
     pass
 
 
-
-
-def get_document_list(dataset_id: str):
-    pass
+def get_document_list(dataset_id: str, pk: str, username: str):
+    doc_list_endpoint = "https://cdx.epa.gov/WQXWeb/api/GetDocumentList"
+    params = {"datasetId": dataset_id}
+    return prepare_and_send_get_request(doc_list_endpoint, params, pk, username)
 
