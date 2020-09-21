@@ -13,7 +13,7 @@ setup(
     description="A lightweight interface to the WQX Web Services",
     long_description=LONG_DESCRIPTION,
     long_description_content_type="text/markdown",
-    packages=find_packages(),
+    packages=find_packages(include=["wqxtools", "wqxtools.*"]),
     classifiers=["License :: OSI Approved :: MIT License"],
     python_requires=">=3.6",
     install_requires=INSTALL_REQUIRES,
