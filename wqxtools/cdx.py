@@ -23,6 +23,7 @@ class CDX:
         ).prepare()
         response = session.send(req)
         content = json.loads(response.content.decode("utf-8"))
+        # error logging should happen here
         return {"status_code": response.status_code, "content": content}
 
     def upload(self) -> dict:
