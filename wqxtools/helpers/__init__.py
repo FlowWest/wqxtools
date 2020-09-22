@@ -4,7 +4,6 @@ from typing import Any
 
 @dataclass
 class ValidData:
-    name: str
     data: Any
 
 

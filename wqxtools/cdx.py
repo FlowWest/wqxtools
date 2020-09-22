@@ -5,15 +5,15 @@ from typing import Any
 from .headers import Headers
 from .helpers import *
 
+BASE_URL = "https://cdx.epa.gov/WQXWeb/api/"
+
 
 class CDX:
-    BASE_URL = "https://cdx.epa.gov/WQXWeb/api/"
-
-    def __init__(self, user_id: str, cdx_key: str, data: ValidData) -> None:
+    def __init__(self, user_id: str, cdx_key: str, data: ValidData, file_name: str) -> None:
         self.user_id = user_id
         self.cdx_key = cdx_key
         self.data = data
-        self.headers = Headers(user_id, cdx_key, data.get("name"))
+        self.headers = Headers(user_id, cdx_key, file_name)
 
     def call(self, endpoint: str, method: str, *args, **kwargs) -> dict:
         url = BASE_URL + endpoint
