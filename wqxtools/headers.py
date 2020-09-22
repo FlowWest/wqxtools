@@ -1,4 +1,6 @@
 import base64
+import hmac
+
 from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Any
@@ -14,10 +16,8 @@ class Headers:
     def __post_init__(self):
         self.cdx_key = base64.b64decode(self.cdx_key)
 
-    def options(self, method: str = "GET", uri: str ) -> dict:
-        signature = bytes(
-            "{}{}{}{}".format(self.username, self.timestamp, uri, method), "utf-8"
-        )
+    def options(self, method: str, uri: str) -> dict:
+        signature = bytes("{}{}{}{}".format(self.username, self.timestamp, uri, method), "utf-8")
         signature_bytes = base64.b64encode(
             hmac.new(key=self.cdx_key, msg=signature, digestmod="sha256").digest()
         )
