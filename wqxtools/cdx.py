@@ -27,7 +27,7 @@ class CDX:
         return {"status_code": response.status_code, "content": content}
 
     def upload(self) -> dict:
-        return self.call("Upload", "POST", data=self.data)
+        return self.call("Upload", "POST", data=generate_csv(self.data))
 
     def start_import(self, file_id: str) -> dict:
         return self.call("StartImport", "GET", params=import_params(file_id))

@@ -25,4 +25,5 @@ class Headers:
             "X-UserID": self.user_id,
             "X-Stamp": timestamp,
             "X-Signature": signature_bytes.decode("utf-8"),
+            "Content-Type": "text/plain",
         }
