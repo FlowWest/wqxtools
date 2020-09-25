@@ -16,25 +16,25 @@ class CDX:
         self.file_name = file_name
         self.headers = Headers(user_id, cdx_key, file_name)
 
-    def call(self, endpoint: str, method: str, **kwargs) -> dict:
+    def call(self, endpoint: str, method: str, **kwargs) -> str:
         url = BASE_URL + endpoint
         session = requests.Session()
         req = requests.Request(method, url, **kwargs).prepare()
         headers = self.headers.options(method, req.url)
+        headers.update(req.headers)
         req.prepare_headers(headers=headers)
         response = session.send(req)
         content = json.loads(response.content.decode("utf-8"))
-        # error logging should happen here
         return content
 
-    def upload(self) -> dict:
+    def upload(self) -> str:
         return self.call(f"Upload/{self.file_name}", "POST", data=generate_csv(self.data))
 
-    def start_import(self, file_id: str, config_id: int) -> dict:
+    def start_import(self, file_id: str, config_id: int) -> str:
         return self.call("StartImport", "GET", params=import_params(file_id, config_id))
 
-    def get_status(self, dataset_id: str) -> dict:
+    def get_status(self, dataset_id: str) -> str:
         return self.call("GetStatus", "GET", params={"datasetId": dataset_id})
 
-    def submit_to_cdx(self, dataset_id: str) -> dict:
+    def submit_to_cdx(self, dataset_id: str) -> str:
         return self.call("SubmitDatasetToCdx", "GET", params={"datasetId": dataset_id})
