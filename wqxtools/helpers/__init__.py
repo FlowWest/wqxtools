@@ -23,13 +23,13 @@ class ValidData:
     data: Any
 
 
-def import_params(file_id):
+def import_params(file_id, config_id):
     # review params
     return {
-        "importConfigurationId": "import_config",
+        "importConfigurationId": config_id,
         "fileId": file_id,
         "fileType": "CSV",
-        "newOrExistingData": 1,
+        "newOrExistingData": "1",
         "uponCompletion": "0",
         "uponCompletionCondition": "0",
         "worksheetsToImport": "1",

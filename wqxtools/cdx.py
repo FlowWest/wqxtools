@@ -13,24 +13,25 @@ class CDX:
         self.user_id = user_id
         self.cdx_key = cdx_key
         self.data = data
+        self.file_name = file_name
         self.headers = Headers(user_id, cdx_key, file_name)
 
-    def call(self, endpoint: str, method: str, *args, **kwargs) -> dict:
+    def call(self, endpoint: str, method: str, **kwargs) -> dict:
         url = BASE_URL + endpoint
         session = requests.Session()
-        req = requests.Request(
-            method, url, kwargs, headers=self.headers.options(method, url)
-        ).prepare()
+        req = requests.Request(method, url, **kwargs).prepare()
+        headers = self.headers.options(method, req.url)
+        req.prepare_headers(headers=headers)
         response = session.send(req)
         content = json.loads(response.content.decode("utf-8"))
         # error logging should happen here
-        return {"status_code": response.status_code, "content": content}
+        return content
 
     def upload(self) -> dict:
-        return self.call("Upload", "POST", data=generate_csv(self.data))
+        return self.call(f"Upload/{self.file_name}", "POST", data=generate_csv(self.data))
 
-    def start_import(self, file_id: str) -> dict:
-        return self.call("StartImport", "GET", params=import_params(file_id))
+    def start_import(self, file_id: str, config_id: int) -> dict:
+        return self.call("StartImport", "GET", params=import_params(file_id, config_id))
 
     def get_status(self, dataset_id: str) -> dict:
         return self.call("GetStatus", "GET", params={"datasetId": dataset_id})
