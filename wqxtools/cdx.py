@@ -18,13 +18,13 @@ class CDX:
 
     def call(self, endpoint: str, method: str, **kwargs) -> str:
         url = BASE_URL + endpoint
-        session = requests.Session()
-        req = requests.Request(method, url, **kwargs).prepare()
-        headers = self.headers.options(method, req.url)
-        headers.update(req.headers)
-        req.prepare_headers(headers=headers)
-        response = session.send(req)
-        content = json.loads(response.content.decode("utf-8"))
+        with requests.Session() as session:
+            req = requests.Request(method, url, **kwargs).prepare()
+            headers = self.headers.options(method, req.url)
+            headers.update(req.headers)
+            req.prepare_headers(headers=headers)
+            response = session.send(req)
+            content = json.loads(response.content.decode("utf-8"))
         return content
 
     def upload(self) -> str:
