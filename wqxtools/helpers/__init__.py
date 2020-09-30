@@ -1,18 +1,14 @@
-import csv
-
+import json
+import pandas as pd
 from io import StringIO, BytesIO
 from dataclasses import dataclass
 from typing import Any
 
 
 def generate_csv(data):
-    headers = data[0].keys()
     proxy = StringIO()
-    writer = csv.writer(proxy)
-    writer.writerow(headers)
-    new_arr = [row.values() for row in data]
-    [writer.writerow(row) for row in new_arr]
     buffer = BytesIO()
+    pd.read_json(json.dumps(data)).to_csv(proxy, index=None)
     buffer.write(proxy.getvalue().encode("utf-8"))
     buffer.seek(0)
     return buffer.read()

@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 HERE = pathlib.Path(__file__).parent
 LONG_DESCRIPTION = (HERE / "README.md").read_text()
 
-INSTALL_REQUIRES = ["requests"]
+INSTALL_REQUIRES = ["requests", "pandas"]
 
 setup(
     name="wqxtools",
