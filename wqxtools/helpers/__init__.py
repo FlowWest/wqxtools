@@ -25,9 +25,9 @@ def import_params(file_id, config_id):
         "importConfigurationId": config_id,
         "fileId": file_id,
         "fileType": "CSV",
-        "newOrExistingData": "1",
-        "uponCompletion": "0",
-        "uponCompletionCondition": "0",
+        "newOrExistingData": "2",
+        "uponCompletion": "2",
+        "uponCompletionCondition": "2",
         "worksheetsToImport": "1",
         "ignoreFirstRowOfFile": True,
     }
