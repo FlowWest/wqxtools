@@ -9,10 +9,16 @@ BASE_URL = "https://cdx.epa.gov/WQXWeb/api/"
 
 
 class CDX:
-    def __init__(self, user_id: str, cdx_key: str, data: ValidData, file_name: str) -> None:
+    def __init__(
+        self,
+        user_id=None,
+        cdx_key=None,
+        file_path=None,
+        file_name=None,
+    ) -> None:
         self.user_id = user_id
         self.cdx_key = cdx_key
-        self.data = data
+        self.file_path = file_path
         self.file_name = file_name
         self.headers = Headers(user_id, cdx_key, file_name)
 
@@ -28,13 +34,15 @@ class CDX:
         return content
 
     def upload(self) -> str:
-        return self.call(f"Upload/{self.file_name}", "POST", data=generate_csv(self.data))
+        return self.call(f"Upload/{self.file_name}", "POST", data=retrieve_data(self.file_path))
 
-    def start_import(self, file_id: str, config_id: int) -> str:
-        return self.call("StartImport", "GET", params=import_params(file_id, config_id))
+    def start_import(self, file_id: str, config_id: int, params: dict = {}) -> str:
+        return self.call("StartImport", "GET", params=import_params(file_id, config_id, params))
 
-    def get_status(self, dataset_id: str) -> str:
+    def get_status(self, dataset_id: str) -> dict:
         return self.call("GetStatus", "GET", params={"datasetId": dataset_id})
 
-    def submit_to_cdx(self, dataset_id: str) -> str:
+    def submit_to_cdx(self, dataset_id: str) -> dict:
         return self.call("SubmitDatasetToCdx", "GET", params={"datasetId": dataset_id})
+
+    # TODO Create the rest of the endpoints
