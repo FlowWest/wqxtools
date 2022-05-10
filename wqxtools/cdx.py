@@ -5,7 +5,7 @@ from typing import Any
 from .headers import Headers
 from .helpers import *
 
-BASE_URL = "https://cdx.epa.gov/WQXWeb/api/"
+BASE_URL = "https://cdx2.epa.gov/WQXWeb/api/"
 
 
 class CDX:
